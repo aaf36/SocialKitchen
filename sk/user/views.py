@@ -18,6 +18,7 @@ def register(request):
             user = authenticate(username=username, password=password)
             login(request, user)
             messages.success(request, (" Registration Successful! "))
+            return redirect(reverse('user:login'))
     else:
         form= RegisterUserForm()
     return render(request, 'user/register.html', {'form':form })
@@ -30,7 +31,7 @@ def login_user(request):
         user = authenticate(username= username, password= password)
         if user is not None:
             login(request, user)
-            return redirect(reverse('user:home'))
+            return redirect(reverse('recipe:home'))
         else:
             messages.success(request, ("There Was An Error Logging In, Try Again..."))
             return redirect(reverse('user:login'))

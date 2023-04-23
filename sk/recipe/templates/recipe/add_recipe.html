@@ -1,0 +1,12 @@
+{% extends 'user/base.html' %}
+{% block nav %}
+{% endblock %}
+{% block content %}
+<form method="POST" action="{% url 'recipe:add-recipe' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{recipe_form.as_p}}
+    {{ingredient_form.as_p}}
+    <br>
+    <input type="submit" value="Create Recipe">
+</form>
+{% endblock %}
