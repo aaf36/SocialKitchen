@@ -6,10 +6,7 @@ from .forms import RegisterUserForm
 from django.urls import reverse 
 
 def index(request):
-    return render(request, "user/base.html")
-
-def home(request):
-    return render(request, "user/home.html")
+    return render(request, "user/about.html")
 
 def register(request):
     if request.method == "POST":
