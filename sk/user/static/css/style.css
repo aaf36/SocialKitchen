@@ -2,18 +2,31 @@
     margin-left: 10px;
 }
 
+.nav-link {
+  color: white;
+}
+
+.navbar-custom {
+  background-color: #FF0000;
+}
+
 .nav-item:hover {
-    color: black;
     text-decoration: underline;
-    font-weight: bold;
+    color: white;
+    
+}
+
+.nav-link:hover{
+  color: white;
 }
 
 .navbar-brand{
-    font-weight: bold;
+    color: white;
 }
 
 .navbar-brand:hover {
     font-size: x-large;
+    color: white;
 }
 
 .about-container {
