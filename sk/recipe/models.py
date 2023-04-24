@@ -10,7 +10,7 @@ class Category(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
-    weight = models.FloatField(default=100, validators=[MinValueValidator(0)])
+    quantity = models.FloatField(default=100, validators=[MinValueValidator(0)])
     unit = models.CharField(max_length=4, default='g')
     brand = models.CharField(max_length=255, null=True, blank=True)
 
@@ -23,20 +23,20 @@ class Ingredient(models.Model):
         return f'{self.name} ({self.brand})' if self.brand else self.name
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=255, primary_key=True)
+    name = models.CharField(max_length=255)
     time_to_cook = models.IntegerField(validators=[MinValueValidator(0)])
     description = models.TextField()
-    image = models.ImageField()
+    image = models.ImageField(upload_to="static/images")
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField('Ingredient', related_name='recipes', through='RecipeIngredient')
 
     def __str__(self):
-        return self.name
+        return f'{self.name}(#{self.id})'
 
 class RecipeIngredient(models.Model):
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
-    weight = models.FloatField(default=0, validators=[MinValueValidator(0)])
+    quantity = models.FloatField(default=0, validators=[MinValueValidator(0)])
     unit = models.CharField(max_length=4, default='g')
 
     class Meta:
@@ -45,7 +45,6 @@ class RecipeIngredient(models.Model):
         ]
 
     def __str__(self):
-        return f'{self.ingredient.name} - {self.recipe.name} - {self.weight}{self.unit}'
-
+        return f'{self.ingredient.name} - {self.recipe.name} - {self.quantity}{self.unit}'
 
 

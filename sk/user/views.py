@@ -31,6 +31,7 @@ def login_user(request):
         user = authenticate(username= username, password= password)
         if user is not None:
             login(request, user)
+            messages.success(request, "Welcome Back!")
             return redirect(reverse('recipe:home'))
         else:
             messages.success(request, ("There Was An Error Logging In, Try Again..."))

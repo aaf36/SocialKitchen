@@ -1,22 +1,22 @@
 from django import forms
 from .models import Recipe, Ingredient, Category, RecipeIngredient
-from django.forms import inlineformset_factory
 
 
 class RecipeIngredientForm(forms.ModelForm):
     UNIT_CHOICES = (
-        ('g', 'g'),
-        ('ml', 'ml'),
-        ('tbsp', 'tbsp'),
+        ('g', 'gram'),
+        ('ml', 'milliliter'),
+        ('tbsp', 'tablespoon'),
+        ('oz', 'ounces'),
     )
 
     ingredient = forms.ModelChoiceField(queryset=Ingredient.objects.all(), widget=forms.Select(attrs={'class': 'form-control'}))
-    weight = forms.FloatField(min_value=0, initial=100, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    quantity = forms.FloatField(min_value=0, initial=100, widget=forms.NumberInput(attrs={'class': 'form-control'}))
     unit = forms.ChoiceField(choices=UNIT_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
 
     class Meta:
         model = RecipeIngredient
-        fields = ['ingredient', 'weight', 'unit']
+        fields = ['ingredient', 'quantity', 'unit']
 
 
 class RecipeForm(forms.ModelForm):
@@ -34,5 +34,4 @@ class RecipeForm(forms.ModelForm):
     def save(self, commit=True):
         recipe = super().save(commit=commit)
         return recipe
-
 
