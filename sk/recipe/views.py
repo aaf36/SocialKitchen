@@ -20,7 +20,7 @@ def add_recipe(request):
         messages.success(request, "You Need To Login Before Accessing This Page...")
         return redirect(reverse('user:login'))
     else:
-        RecipeIngredientFormset = modelformset_factory(RecipeIngredient, form=RecipeIngredientForm, extra=3)
+        RecipeIngredientFormset = modelformset_factory(RecipeIngredient, form=RecipeIngredientForm, extra=1)
         if request.method == 'POST':
             form =RecipeForm(request.POST, request.FILES)
             formset = RecipeIngredientFormset(request.POST, queryset=RecipeIngredient.objects.none())
@@ -28,7 +28,7 @@ def add_recipe(request):
                 recipe= form.save()
                 ingredients = formset.save(commit=False)
                 for ingredient in ingredients:
-                    ingredient.recipe= recipe
+                    ingredient.recipe = recipe
                     ingredient.save()
                 return render(request, "recipe/details_recipe.html", {'recipe':recipe,'ingredients':ingredients})
                 
@@ -44,7 +44,7 @@ def details(request, id):
         return redirect(reverse('user:login'))
     else:
         recipe = get_object_or_404(Recipe, pk=id)
-        ingredients= recipe.ingredients.all
+        ingredients = recipe.recipeingredient_set.all()
         return render(request, "recipe/details_recipe.html", {'recipe':recipe, 'ingredients':ingredients})
 
 
