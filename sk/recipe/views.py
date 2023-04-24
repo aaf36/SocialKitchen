@@ -1,5 +1,5 @@
 from django.forms import modelformset_factory
-from django.shortcuts import redirect, render, HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.contrib import messages
 from django.urls import reverse
 from .forms import RecipeIngredientForm, RecipeForm
@@ -9,7 +9,7 @@ from .models import Recipe, RecipeIngredient
 # Create your views here.
 def home(request):
     if not request.user.is_authenticated:
-        messages.success(request, "Cannot Access Page Please Login...")
+        messages.success(request, "You Need To Login Before Accessing This Page...")
         return redirect(reverse('user:login'))
     else:
         return render(request, "recipe/home.html")
@@ -17,7 +17,7 @@ def home(request):
 
 def add_recipe(request):
     if not request.user.is_authenticated:
-        messages.success(request, "Cannot Access Page Please Login...")
+        messages.success(request, "You Need To Login Before Accessing This Page...")
         return redirect(reverse('user:login'))
     else:
         RecipeIngredientFormset = modelformset_factory(RecipeIngredient, form=RecipeIngredientForm, extra=3)
@@ -30,7 +30,7 @@ def add_recipe(request):
                 for ingredient in ingredients:
                     ingredient.recipe= recipe
                     ingredient.save()
-                return HttpResponse("success")
+                return render(request, "recipe/details_recipe.html", {'recipe':recipe,'ingredients':ingredients})
                 
         else:
             form = RecipeForm()
@@ -38,7 +38,13 @@ def add_recipe(request):
         return render(request, 'recipe/add_recipe.html', {'form':form, 'formset': formset})
 
 
-
-
+def details(request, id):
+    if not request.user.is_authenticated:
+        messages.success(request, "You Need To Login Before Accessing This Page...")
+        return redirect(reverse('user:login'))
+    else:
+        recipe = get_object_or_404(Recipe, pk=id)
+        ingredients= recipe.ingredients.all
+        return render(request, "recipe/details_recipe.html", {'recipe':recipe, 'ingredients':ingredients})
 
 

@@ -26,7 +26,7 @@ class Recipe(models.Model):
     name = models.CharField(max_length=255)
     time_to_cook = models.IntegerField(validators=[MinValueValidator(0)])
     description = models.TextField()
-    image = models.ImageField(upload_to="static/images")
+    image = models.ImageField(upload_to="recipe/static/images/recipes/%Y/%m/%d/", blank=True, null=True, unique=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField('Ingredient', related_name='recipes', through='RecipeIngredient')
 
