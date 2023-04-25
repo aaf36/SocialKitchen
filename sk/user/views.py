@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import RegisterUserForm
 from django.urls import reverse 
+from .models import Profile, User
 
 def index(request):
     return render(request, "user/about.html")
@@ -17,7 +18,7 @@ def register(request):
             password = form.cleaned_data['password1']
             user = authenticate(username=username, password=password)
             login(request, user)
-            messages.success(request, (" Registration Successful! "))
+            messages.success(request, (" Registration Successful! Welcome To The SocialKitchen Please Login."))
             return redirect(reverse('user:login'))
     else:
         form= RegisterUserForm()
@@ -43,3 +44,20 @@ def logout_user(request):
     logout(request)
     messages.success(request, ("You Were Logged Out! "))
     return redirect(reverse('user:index'))
+
+def profile_list(request):
+    if not request.user.is_authenticated:
+        messages.success(request, "You Need To Login Before Accessing This Page...")
+        return redirect(reverse('user:login'))
+    else:
+        profiles = Profile.objects.exclude(user= request.user)
+        return render(request, "user/profile_list.html", {'profiles':profiles})
+    
+def profile(request, id):
+    if not request.user.is_authenticated:
+        messages.success(request, "You Need To Login Before Accessing This Page...")
+        return redirect(reverse('user:login'))
+    else:
+        user = User.objects.get(id=id)
+        user_profile = Profile.objects.get(user= user)
+        return render(request, "user/profile.html", {'profile':user_profile})

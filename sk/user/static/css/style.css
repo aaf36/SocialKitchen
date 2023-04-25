@@ -84,3 +84,21 @@
     width: 100%;
   }
   
+#add-more{
+    background-color: #FF0000; /* red background color */
+    color: #FFFFFF; /* white text color */
+    padding: 10px 20px; /* padding for the button */
+    border: none; /* remove border */
+    border-radius: 40px; /* set border radius to 40px */
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  button[type="submit"] {
+    background-color: #FF0000; /* red background color */
+    color: #FFFFFF; /* white text color */
+    padding: 10px 20px; /* padding for the button */
+    border: none; /* remove border */
+    border-radius: 40px; /* set border radius to 40px */
+    cursor: pointer;
+  }

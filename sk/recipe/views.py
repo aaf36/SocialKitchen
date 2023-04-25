@@ -49,39 +49,47 @@ def details(request, id):
 
 
 def remove_recipe(request,id):
-    recipe = get_object_or_404(Recipe, pk=id)
-    recipe.delete()
-    messages.success(request, "Recipe Have Been Removed Successfully")
-    return redirect(reverse('recipe:home'))
+    if not request.user.is_authenticated:
+        messages.success(request, "You Need To Login Before Accessing This Page...")
+        return redirect(reverse('user:login'))
+    else:
+        recipe = get_object_or_404(Recipe, pk=id)
+        recipe.delete()
+        messages.success(request, "Recipe Have Been Removed Successfully")
+        return redirect(reverse('recipe:home'))
 
 
 def update_recipe(request, id):
-    recipe = get_object_or_404(Recipe, pk=id)
-    RecipeIngredientFormset = modelformset_factory(
-        RecipeIngredient, 
-        form=RecipeIngredientForm, 
-        extra=0
-    )
-
-    if request.method == 'POST':
-        form = RecipeForm(request.POST, request.FILES, instance=recipe)
-        formset = RecipeIngredientFormset(request.POST, queryset=recipe.recipeingredient_set.all())
-
-        if form.is_valid() and formset.is_valid():
-            recipe = form.save()
-            for ingredient_form in formset:
-                if ingredient_form.is_valid():
-                    ingredient = ingredient_form.save(commit=False)
-                    ingredient.recipe = recipe
-                    ingredient.save()
-
-            messages.success(request, "Recipe updated successfully!")
-            return redirect(reverse('recipe:details', args=[recipe.pk]))
-
+    if not request.user.is_authenticated:
+        messages.success(request, "You Need To Login Before Accessing This Page...")
+        return redirect(reverse('user:login'))
     else:
-        form = RecipeForm(instance=recipe)
-        formset = RecipeIngredientFormset(queryset=recipe.recipeingredient_set.all())
-        formset.prefix = 'form'
+        recipe = get_object_or_404(Recipe, pk=id)
+        RecipeIngredientFormset = modelformset_factory(
+            RecipeIngredient, 
+            form=RecipeIngredientForm, 
+            extra=0
+        )
 
-    return render(request, 'recipe/update_recipe.html', {'form': form, 'formset': formset, 'recipe': recipe})
+        if request.method == 'POST':
+            form = RecipeForm(request.POST, request.FILES, instance=recipe)
+            formset = RecipeIngredientFormset(request.POST, queryset=recipe.recipeingredient_set.all())
+
+            if form.is_valid() and formset.is_valid():
+                recipe = form.save()
+                for ingredient_form in formset:
+                    if ingredient_form.is_valid():
+                        ingredient = ingredient_form.save(commit=False)
+                        ingredient.recipe = recipe
+                        ingredient.save()
+
+                messages.success(request, "Recipe updated successfully!")
+                return redirect(reverse('recipe:details', args=[recipe.pk]))
+
+        else:
+            form = RecipeForm(instance=recipe)
+            formset = RecipeIngredientFormset(queryset=recipe.recipeingredient_set.all())
+            formset.prefix = 'form'
+
+        return render(request, 'recipe/update_recipe.html', {'form': form, 'formset': formset, 'recipe': recipe})
 
