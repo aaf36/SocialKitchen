@@ -60,4 +60,13 @@ def profile(request, id):
     else:
         user = User.objects.get(id=id)
         user_profile = Profile.objects.get(user= user)
+        if request.method == "POST":
+            current_user_profile = request.user.profile
+            action = request.POST['follow']
+            if action == "unfollow":
+                current_user_profile.follow.remove(user_profile)
+            else:
+                current_user_profile.follow.add(user_profile)
+            current_user_profile.save()
+
         return render(request, "user/profile.html", {'profile':user_profile})
