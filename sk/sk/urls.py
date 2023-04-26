@@ -22,6 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',include('user.urls')),
     path('recipe/',include('recipe.urls')),
+    path('macros/',include('macros.urls')),
 ]
 
 if settings.DEBUG:

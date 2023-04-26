@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.urls import reverse
 from .forms import RecipeIngredientForm, RecipeForm
 from .models import Recipe, RecipeIngredient
+from macros.views import calc_macros, convert2grams
 
 
 # Create your views here.
