@@ -10,7 +10,26 @@
     <li class="nav-item">
       <a class="nav-link" aria-current="page" href="{% url 'user:logout' %}">logout</a>
     </li>
+    <form class="d-flex" role="search" method="POST" action="{% url 'recipe:search-recipe' %}" style="margin-left: 20px;">
+      {% csrf_token %}
+      <input class="form-control me-2" type="search" placeholder="Search Recipe" aria-label="Search" name="search">
+      <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
 </ul>
 {% endblock %}
 {% block content %}
+<div class="container text-center">
+  {% for recipe in recipes %}
+  <div class="col-md-4 mb-4">
+    <div class="card">
+      <img src="{{recipe.image.url}}" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title"><a href="{% url 'recipe:details' recipe.id %}" style="text-decoration: none; color: black;">{{recipe.name}}</a></h5>
+        <p class="card-text"><a href="{% url 'user:profile' recipe.user.id %}">Posted By: @{{recipe.user|lower}}</a></p>
+      </div>
+    </div>
+  </div>
+  <br><br><br>
+  {% endfor %}
+</div>
 {% endblock %}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from .forms import RegisterUserForm
 from django.urls import reverse 
 from .models import Profile, User
+from recipe.models import Recipe
 
 def index(request):
     return render(request, "user/about.html")
@@ -68,5 +69,27 @@ def profile(request, id):
             else:
                 current_user_profile.follow.add(user_profile)
             current_user_profile.save()
+        recipes = Recipe.objects.filter(user= user)
+        return render(request, "user/profile.html", {'profile':user_profile, 'recipes':recipes})
+    
 
-        return render(request, "user/profile.html", {'profile':user_profile})
+def search_profile(request):
+    if not request.user.is_authenticated:
+        messages.success(request, "You Need To Login Before Accessing This Page...")
+        return redirect(reverse('user:login'))
+    else:
+        matched_result = []
+        if request.method == 'POST':
+            search_query = request.POST.get('search')
+            profiles = Profile.objects.exclude(user=request.user)
+            for profile in profiles:
+                if search_query == profile.user.username:
+                    matched_result.append(profile)
+                    break
+                else:
+                    if search_query.lower() in profile.user.username.lower():
+                        matched_result.append(profile)
+
+        return render(request, "user/search_profile.html", {'result':matched_result})
+
+

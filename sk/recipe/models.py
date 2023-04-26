@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 
 
 class Category(models.Model):
@@ -10,9 +11,11 @@ class Category(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
-    quantity = models.FloatField(default=100, validators=[MinValueValidator(0)])
-    unit = models.CharField(max_length=4, default='g')
     brand = models.CharField(max_length=255, null=True, blank=True)
+    calories = models.FloatField(validators= [MinValueValidator(0)], default=0)
+    protein = models.FloatField(validators= [MinValueValidator(0)], default=0)
+    carbs = models.FloatField(validators= [MinValueValidator(0)], default=0)
+    fats = models.FloatField(validators= [MinValueValidator(0)], default=0)
 
     class Meta:
         constraints = [
@@ -23,6 +26,7 @@ class Ingredient(models.Model):
         return f'{self.name} ({self.brand})' if self.brand else self.name
 
 class Recipe(models.Model):
+    user= models.ForeignKey(User, on_delete=models.CASCADE , default=1)
     name = models.CharField(max_length=255)
     time_to_cook = models.IntegerField(validators=[MinValueValidator(0)])
     description = models.TextField()
@@ -46,5 +50,7 @@ class RecipeIngredient(models.Model):
 
     def __str__(self):
         return f'{self.ingredient.name} - {self.recipe.name} - {self.quantity}{self.unit}'
+
+
 
 

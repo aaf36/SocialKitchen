@@ -12,7 +12,8 @@ def home(request):
         messages.success(request, "You Need To Login Before Accessing This Page...")
         return redirect(reverse('user:login'))
     else:
-        return render(request, "recipe/home.html")
+        recipes = Recipe.objects.all
+        return render(request, "recipe/home.html", {'recipes':recipes})
     
 
 def add_recipe(request):
@@ -93,3 +94,21 @@ def update_recipe(request, id):
 
         return render(request, 'recipe/update_recipe.html', {'form': form, 'formset': formset, 'recipe': recipe})
 
+def search_recipe(request):
+    if not request.user.is_authenticated:
+        messages.success(request, "You Need To Login Before Accessing This Page...")
+        return redirect(reverse('user:login'))
+    else:
+        results= []
+        if request.method== "POST":
+            search_query = request.POST.get('search')
+            recipes = Recipe.objects.all()
+            for recipe in recipes:
+                if search_query.lower() == recipe.name.lower():
+                    results.append(recipe)
+                    break
+                else:
+                    if search_query.lower() in recipe.name.lower():
+                        results.append(recipe)
+
+            return render(request, "recipe/search_recipe.html", {'results':results})
